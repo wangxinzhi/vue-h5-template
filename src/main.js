@@ -18,7 +18,9 @@ import '@/plugins/vant'
 import '@/assets/css/index.scss'
 // 移动端适配
 import 'lib-flexible/flexible.js'
-
+// echarts
+import * as echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 // filters
 import './filters'
 Vue.config.productionTip = false

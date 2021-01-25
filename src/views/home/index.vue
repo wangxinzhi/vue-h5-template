@@ -2,12 +2,14 @@
 <template>
   <div class="index-container">
     <div class="warpper">
-      <h1 class="demo-home__title"><img src="https://www.sunniejs.cn/static/weapp/logo.png" /><span> VUE H5开发模板</span></h1>
+      <h1 class="demo-home__title"><img src="https://www.sunniejs.cn/static/weapp/logo.png" /><span>创源管理驾驶舱</span></h1>
       <h2 class="demo-home__desc">
-        A vue h5 template with Vant UI
+        Cre8direct Management Cockpit
       </h2>
     </div>
-    <van-cell icon="success" v-for="item in list" :key="item" :title="item" />
+    <div class="card">
+      <van-cell icon="success" v-for="item in list" :key="item.key" :title="item.title" is-link :to="item.route" />
+    </div>
   </div>
 </template>
 
@@ -16,32 +18,38 @@ export default {
   data() {
     return {
       list: [
-        'Vue-cli4',
-        '配置多环境变量',
-        'VantUI 组件按需加载',
-        'Sass 全局样式',
-        'Webpack 4',
-        'Vuex 状态管理',
-        'Axios 封装及接口管理',
-        'Vue-router',
-        'Webpack 4 vue.config.js 基础配置',
-        '配置 proxy 跨域',
-        '配置 alias 别名',
-        '配置 打包分析',
-        '配置 externals 引入 cdn 资源',
-        '去掉 console.log',
-        'splitChunks 单独打包第三方模块',
-        '添加 IE 兼容',
-        'Eslint+Pettier 统一开发规范'
+        {
+          key: '1',
+          title: '收入',
+          route: '/admin/income'
+        },
+        {
+          key: '2',
+          title: '月订单以及预算',
+          route: '/admin/salesAndBudget'
+        },
+        {
+          key: '3',
+          title: '年度销售额完成度',
+          route: '/admin/salesDashboard'
+        },
+        {
+          key: '4',
+          title: '资金',
+          route: '/admin/cashDashboard'
+        }
       ]
     }
   },
 
   computed: {},
 
-  mounted() { },
+  mounted() {
 
-  methods: {}
+  },
+
+  methods: {
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -49,6 +57,11 @@ export default {
   .warpper {
     padding: 12px;
     background: #fff;
+    margin: auto;
+    margin-top:10px;
+    margin-bottom: 10px;
+    margin-left:10px;
+    margin-right: 10px;
     .demo-home__title {
       margin: 0 0 6px;
       font-size: 32px;
@@ -71,5 +84,21 @@ export default {
       font-size: 14px;
     }
   }
+  .card {
+    padding: 3px;
+    margin: auto;
+    margin-top:10px;
+    margin-bottom: 10px;
+    margin-left:10px;
+    margin-right: 10px;
+    height: 85%;
+    width: 93%;
+    box-shadow: 0 1rpx 5rpx 0px rgba(0, 0, 0, 0.05);
+    font-size: 30rpx;
+    border-top: 1rpx solid #eee;
+    border-radius: 5rpx;
+    background: #fff;
+    border-radius: 7px;
+}
 }
 </style>
