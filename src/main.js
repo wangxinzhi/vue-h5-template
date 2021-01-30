@@ -2,6 +2,7 @@
 // https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#babelpolyfill
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
+import './assets/icon/iconfont.css'
 
 import Vue from 'vue'
 import App from './App.vue'
@@ -24,6 +25,40 @@ Vue.prototype.$echarts = echarts
 // filters
 import './filters'
 Vue.config.productionTip = false
+
+import VCalendar from 'v-calendar' // 引入日历插件
+Vue.use(VCalendar, {
+  componentPrefix: 'vc'
+})
+
+/**
+ * 按数字大小转换为 万 或者 亿 为单位的数字
+ */
+Vue.filter('NumToUnitNum', function(value) {
+  if (!value) return '0.00'
+  if (value > 100000000 || value < -100000000) {
+    return Number(value / 100000000).toFixed(2)
+  } else if (value > 10000 || value < -10000) {
+    return Number(value / 10000).toFixed(2)
+  } else {
+    return Number(value).toFixed(2)
+  }
+})
+
+/**
+   * 通过数字获取到数字转换后的单位
+   */
+Vue.filter('GetUnit', function(value) {
+  if (!value) ' '
+  value = Math.abs(value)
+  if (value > 100000000) {
+    return '亿元'
+  } else if (value > 10000) {
+    return '万元'
+  } else {
+    return '元'
+  }
+})
 
 new Vue({
   el: '#app',

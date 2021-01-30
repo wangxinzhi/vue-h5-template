@@ -2,10 +2,19 @@
   <div class="index-container">
     <van-cell class="card" style="height: 150px;">
       <van-cell>
-        <div class="subheader">创源集团资金日报</div>
+        <div class="title-row">
+          <div class="subheader">创源集团资金日报</div>
+          <div class="calendar">
+            <span class="icon iconfont icon-riqi" @click="click" style="font-size: 25px">
+              <van-action-sheet v-model="show" @click-overlay="overlay" @click="stopPro($event)">
+                <vc-date-picker ref="vcDatePicker" v-model="range" :model-config="modelConfig" :minDate="minDate" :maxDate="maxDate" is-range is-expanded />
+              </van-action-sheet>
+            </span>
+          </div>
+        </div>
       </van-cell>
-      <van-cell>总本月余额: {{ totalFunds }} 元</van-cell>
-      <van-cell>总受限金额: {{ totalLimited }} 元</van-cell>
+      <van-cell style="padding: 5px 5px 5px 16px">总本月余额: {{ totalFunds | NumToUnitNum }} {{ totalFunds | GetUnit }}</van-cell>
+      <van-cell style="padding: 5px 5px 5px 16px">总受限金额: {{ totalLimited | NumToUnitNum }} {{ totalLimited | GetUnit }}</van-cell>
     </van-cell>
     <van-cell class="card">
       <van-tabs id="myChartP" v-model="activeName" @click="onClick" :style="{ height: this.cardHeight }">
@@ -17,8 +26,8 @@
             <VuePerfectScrollbar class="scroll-area" :settings="settings" :style="{ height: this.scrollerHeight }">
               <van-cell v-for="item in cashList" :key="item" :title="item.bank" @click="cellClick(item)">
                 <template #label>
-                  <div>本月余额：{{item.balanceOfMonth}} 元</div>
-                  <div>受限金额：{{item.limitedAmount}} 元</div>
+                  <div>本月余额：{{ item.balanceOfMonth | NumToUnitNum }} {{ item.balanceOfMonth | GetUnit }}</div>
+                  <div>受限金额：{{ item.limitedAmount | NumToUnitNum }} {{ item.limitedAmount | GetUnit }}</div>
                   <div class="Progress mb-3">
                     <span v-for="i in item.currencyAccounts" :key="i.key" class="Progress-item" :style="{ backgroundColor: color[i.key], width: i.value + '%'}"></span>
                     <!-- <span itemprop="keywords" aria-label="JavaScript 71.9" style="background-color: #e34c26;width: 71.9%;" class="Progress-item"></span>
@@ -30,7 +39,7 @@
                     <div v-for="i in item.currencyAccounts" :key="i.key" class="col-auto d-flex align-items-center pe-2">
                       <span class="legend me-2 bg-primary" :style="{ backgroundColor: color[i.key] }"></span>
                       <span>{{ i.key }}</span>
-                      <span>{{ i.value}}%</span>
+                      <span>{{ i.value }}%</span>
                     </div>
                   </div>
                 </template>
@@ -44,7 +53,7 @@
 </template>
 
 <script>
-import { getTotalGroupFunds, getSubsidiaryFunds, getSubsidiaryFunds4Charts, getSingleCompanyFundsDetails } from '@/api/cashDashboard.js'
+import { getTotalGroupFunds, getSubsidiaryFunds, getSubsidiaryFunds4Charts } from '@/api/cashDashboard.js'
 import VuePerfectScrollbar from 'vue-perfect-scrollbar'
 // import { mapGetters } from 'vuex'
 export default {
@@ -61,14 +70,27 @@ export default {
       finished: false,
       totalFunds: '******',
       totalLimited: '******',
-      cashList: [{ balanceOfMonth: 1, limitedAmount: 1, bank: '测试', currencyAccounts: [{ key: 'CNY', value: '39' }, { key: 'USD', value: '17.5' }] }, { balanceOfMonth: 1, limitedAmount: 1, bank: '测试1', currencyAccounts: [{ key: 'USD', value: '39' }] }],
+      cashList: [],
+      // [{ balanceOfMonth: 1, limitedAmount: 1, bank: '测试', currencyAccounts: [{ key: 'CNY', value: '29' }, { key: 'USD', value: '17.5' }, { key: 'GBP', value: '7.5' }, { key: 'VND', value: '8.5' }, { key: 'JPY', value: '19.5' }, { key: 'EUR', value: '10.5' }] }, { balanceOfMonth: 1, limitedAmount: 1, bank: '测试1', currencyAccounts: [{ key: 'USD', value: '39' }] }]
       pieData: [],
-      color: { CNY: '#FF0000', USD: '#3CB371', EUR: '#0000FF', VND: 'FFFF66', JPY: '#FFC0CB', GBP: '#FFA500' },
+      color: { CNY: '#FF0000', USD: '#3CB371', EUR: '#0000FF', VND: '#FFFF66', JPY: '#FFC0CB', GBP: '#FFA500', HKD: '#FA58F4' },
       settings: {
         maxScrollbarLength: 30
       },
       scrollerHeight: (document.documentElement.clientHeight - 300) + 'px',
-      cardHeight: (document.documentElement.clientHeight - 250) + 'px'
+      cardHeight: (document.documentElement.clientHeight - 250) + 'px',
+      minDate: new Date(1969, 0, 1),
+      maxDate: new Date(),
+      range: {
+        startTime: new Date(2020, 0, 1),
+        endTime: new Date()
+      },
+      modelConfig: {
+        type: 'string',
+        mask: 'YYYY-MM-DD' // Uses 'iso' if missing
+      },
+      vanActionSheetShow: false,
+      show: false
     }
   },
 
@@ -84,8 +106,8 @@ export default {
     // 初始化数据
     initdata() {
       // 集团总资金数据
-      const startTime = '2020-01-01'
-      const endTime = new Date()
+      const startTime = this.range.startTime
+      const endTime = this.range.endTime
       const params = { startTime: startTime, endTime: endTime, summaryMark: 'X' }
       getTotalGroupFunds(params).then(res => {
         if (res) {
@@ -94,18 +116,20 @@ export default {
         }
       })
       // 子公司资金数据列表
-      // getSubsidiaryFunds(params).then(res => {
-      //   if (res) {
-      //     this.cashList = res
-      //   }
-      // })
+      getSubsidiaryFunds(params).then(res => {
+        if (res) {
+          this.cashList = res
+        }
+      })
       // 子公司资金数据for echarts 初始化
       getSubsidiaryFunds4Charts(params).then(res => {
         if (res) {
           // 数据处理
           this.pieData.length = 0
           res.forEach(element => {
-            this.pieData.push({ value: element.balanceOfMonth, name: element.bank })
+            // 处理数据
+            const value = this.NumToUnitNum(element.balanceOfMonth)
+            this.pieData.push({ value: value, name: element.bank })
           })
           this.drawLine()
         }
@@ -117,8 +141,8 @@ export default {
       if (name === 'details') {
         this.onRefresh()
       } else if (name === 'chart') {
-        const startTime = '2020-01-01'
-        const endTime = new Date()
+        const startTime = this.range.start
+        const endTime = this.range.end
         const params = { startTime: startTime, endTime: endTime, summaryMark: 'X' }
         getSubsidiaryFunds4Charts(params).then(res => {
           if (res) {
@@ -140,7 +164,7 @@ export default {
       const option = {
         tooltip: {
           trigger: 'item',
-          formatter: '{b}: {c} 元({d}%)',
+          formatter: '{b}: {c} 万元({d}%)',
           textStyle: {
             fontSize: 9
           },
@@ -184,8 +208,8 @@ export default {
     },
     onRefresh() {
       this.loading = true
-      const startTime = '2020-01-01'
-      const endTime = new Date()
+      const startTime = this.range.start ? this.range.start : this.range.startTime
+      const endTime = this.range.end ? this.range.end : this.range.endTime
       const params = { startTime: startTime, endTime: endTime, summaryMark: 'X' }
       getSubsidiaryFunds(params).then(res => {
         if (res) {
@@ -198,14 +222,76 @@ export default {
       })
     },
     cellClick(item) {
-      console.log('console.log(item)')
       console.log(item)
-      const params = { corpId: item.corpId, startTime: '2020-01-01', endTime: '2020-12-31' }
-      getSingleCompanyFundsDetails(params).then(res => {
+      // const params = { corpId: item.corpId, startTime: '2020-01-01', endTime: '2020-12-31' }
+      // getSingleCompanyFundsDetails(params).then(res => {
+      //   if (res) {
+      //     console.log(res)
+      //   }
+      // })
+    },
+    dateTimeClick() {
+    },
+    click() {
+      this.show = true
+    },
+    stopPro(e) {
+      e.stopPropraation() // 组织冒泡
+      e.preventDefaut() // 组织默认事件
+    },
+    overlay() {
+      console.log('overlay')
+      console.log(this.range)
+      setTimeout(() => {
+        this.refresh()
+        this.show = false
+      }, 10)
+    },
+    refresh() {
+      // 集团总资金数据
+      const startTime = this.range.start ? this.range.start : this.range.startTime
+      const endTime = this.range.end ? this.range.end : this.range.endTime
+      const params = { startTime: startTime, endTime: endTime, summaryMark: 'X' }
+      getTotalGroupFunds(params).then(res => {
         if (res) {
-          console.log(res)
+          this.totalFunds = res.balanceOfMonth
+          this.totalLimited = res.limitedAmount
         }
       })
+      // 子公司资金数据列表
+      getSubsidiaryFunds(params).then(res => {
+        if (res) {
+          this.cashList = res
+        }
+      })
+      // 子公司资金数据for echarts 初始化
+      getSubsidiaryFunds4Charts(params).then(res => {
+        if (res) {
+          // 数据处理
+          this.pieData.length = 0
+          res.forEach(element => {
+            this.pieData.push({ value: element.balanceOfMonth, name: element.bank })
+          })
+          this.drawLine()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    NumToUnitNum(value) {
+      if (!value) return '0.00 万元'
+      return Number(value / 10000).toFixed(2)
+    },
+    GetUnit(value) {
+      if (!value) ' '
+      value = Math.abs(value)
+      if (value > 100000000) {
+        return '亿元'
+      } else if (value > 10000) {
+        return '万元'
+      } else {
+        return '元'
+      }
     }
   }
 }
@@ -255,6 +341,11 @@ export default {
     display: flex;
     flex-wrap: wrap;
   }
+  .title-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
   .col-auto {
     flex: 0 0 auto;
     width: auto;
@@ -276,6 +367,18 @@ export default {
   }
   .pe-2 {
     padding-right: .5rem !important;
-}
+  }
+  .lh-1 {
+    line-height: 1 !important;
+  }
+  .ms-auto {
+    margin-left: auto !important;
+  }
+  .dropdown, .dropend, .dropstart, .dropup {
+    position: relative;
+  }
+  .calendar {
+    color: rgba(62, 136, 247, 0.726);
+  }
 }
 </style>
