@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1267593",
+      "name": "日历",
+      "font_class": "02",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "2170010",
+      "name": "日历",
+      "font_class": "rili1",
+      "unicode": "e6f4",
+      "unicode_decimal": 59124
+    },
+    {
+      "icon_id": "3773536",
+      "name": "5_日历_",
+      "font_class": "_rili_",
+      "unicode": "e61e",
+      "unicode_decimal": 58910
+    },
+    {
+      "icon_id": "4893432",
+      "name": "日历2",
+      "font_class": "rili2",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "19591130",
+      "name": "公司客户",
+      "font_class": "gongsikehu",
+      "unicode": "e6bc",
+      "unicode_decimal": 59068
+    },
+    {
+      "icon_id": "3729189",
+      "name": "公司",
+      "font_class": "gongsi",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "17130709",
+      "name": "日历",
+      "font_class": "rili",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
       "icon_id": "3900960",
       "name": "日期",
       "font_class": "riqi",

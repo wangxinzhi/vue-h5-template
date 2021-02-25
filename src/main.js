@@ -3,6 +3,10 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 import './assets/icon/iconfont.css'
+import './assets/icon/iconfont.js'
+import '@babel/polyfill'
+import Es6Promise from 'es6-promise'
+Es6Promise.polyfill()
 
 import Vue from 'vue'
 import App from './App.vue'
@@ -26,10 +30,10 @@ Vue.prototype.$echarts = echarts
 import './filters'
 Vue.config.productionTip = false
 
-import VCalendar from 'v-calendar' // 引入日历插件
-Vue.use(VCalendar, {
-  componentPrefix: 'vc'
-})
+// import VCalendar from 'v-calendar' // 引入日历插件
+// Vue.use(VCalendar, {
+//   componentPrefix: 'vc'
+// })
 
 /**
  * 按数字大小转换为 万 或者 亿 为单位的数字

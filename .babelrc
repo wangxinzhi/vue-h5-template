@@ -1,12 +1,18 @@
+// {
+//     "presets": [["@babel/preset-env", { "modules": false }]],
+//     "plugins": [
+//       [
+//         "component",
+//         {
+//           "libraryName": "element-ui",
+//           "styleLibraryName": "theme-chalk"
+//         }
+//       ]
+//     ]
+//   }
 {
-    "presets": [["@babel/preset-env", { "modules": false }]],
+    "presets": ["@babel/preset-env"],
     "plugins": [
-      [
-        "component",
-        {
-          "libraryName": "element-ui",
-          "styleLibraryName": "theme-chalk"
-        }
-      ]
+      "@babel/plugin-transform-runtime"
     ]
-  }
+}

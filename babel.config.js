@@ -17,6 +17,22 @@ if (IS_PROD) {
 }
 
 module.exports = {
-  presets: [['@vue/cli-plugin-babel/preset', { useBuiltIns: 'usage', corejs: 3 }]],
+  presets: [
+    [
+      // '@vue/cli-plugin-babel/preset',
+      // {
+      //   useBuiltIns: 'usage',
+      //   corejs: 3
+      // }
+      '@vue/app',
+      {
+        'useBuiltIns': 'entry',
+        polyfills: [
+          'es6.promise',
+          'es6.symbol'
+        ]
+      }
+    ]
+  ],
   plugins
 }

@@ -5,15 +5,19 @@
         <div class="title-row">
           <div class="subheader">创源集团资金日报</div>
           <div class="calendar">
-            <span class="icon iconfont icon-riqi" @click="click" style="font-size: 25px">
-              <van-action-sheet v-model="show" @click-overlay="overlay" @click="stopPro($event)">
-                <vc-date-picker ref="vcDatePicker" v-model="range" :model-config="modelConfig" :minDate="minDate" :maxDate="maxDate" is-range is-expanded />
-              </van-action-sheet>
-            </span>
+            <svg class="icon iconfont" @click="click" style="font-size: 23px">
+              <use xlink:href="#icon-_rili_"/>
+            </svg>
+            <van-action-sheet v-model="show" @click-overlay="overlay" @click="stopPro($event)">
+              <!-- <vc-date-picker ref="vcDatePicker" v-model="range" :model-config="modelConfig" :minDate="minDate" :maxDate="maxDate" is-range is-expanded /> -->
+              <van-calendar type="range" :poppable="false" :show-confirm="false" :style="{ height: '500px' }" :min-date="minDate" :max-date="maxDate" :allow-same-day="true" @confirm="onConfirm"/>
+            </van-action-sheet>
+            <!-- <span class="icon iconfont icon-riqi" @click="click" style="font-size: 25px"> -->
+            <!-- </span> -->
           </div>
         </div>
       </van-cell>
-      <van-cell style="padding: 5px 5px 5px 16px">总本月余额: {{ totalFunds | NumToUnitNum }} {{ totalFunds | GetUnit }}</van-cell>
+      <van-cell style="padding: 5px 5px 5px 16px">总余额: {{ totalFunds | NumToUnitNum }} {{ totalFunds | GetUnit }}</van-cell>
       <van-cell style="padding: 5px 5px 5px 16px">总受限金额: {{ totalLimited | NumToUnitNum }} {{ totalLimited | GetUnit }}</van-cell>
     </van-cell>
     <van-cell class="card">
@@ -149,7 +153,8 @@ export default {
           // 数据处理
             this.pieData.length = 0
             res.forEach(element => {
-              this.pieData.push({ value: element.dayBalance, name: element.bank })
+              const value = this.NumToUnitNum(element.balanceOfMonth)
+              this.pieData.push({ value: value, name: element.bank })
             })
             this.drawLine()
           }
@@ -270,7 +275,8 @@ export default {
           // 数据处理
           this.pieData.length = 0
           res.forEach(element => {
-            this.pieData.push({ value: element.balanceOfMonth, name: element.bank })
+            const value = this.NumToUnitNum(element.balanceOfMonth)
+            this.pieData.push({ value: value, name: element.bank })
           })
           this.drawLine()
         }
@@ -292,6 +298,14 @@ export default {
       } else {
         return '元'
       }
+    },
+    onConfirm(date) {
+      const [start, end] = date
+      this.range.start = this.formatDate(start)
+      this.range.end = this.formatDate(end)
+    },
+    formatDate(date) {
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
     }
   }
 }
@@ -379,6 +393,13 @@ export default {
   }
   .calendar {
     color: rgba(62, 136, 247, 0.726);
+  }
+  .icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
   }
 }
 </style>
