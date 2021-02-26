@@ -25,18 +25,18 @@ export default {
         },
         {
           key: '2',
-          title: '月订单以及预算',
-          route: '/admin/salesAndBudget'
+          title: '资金',
+          route: '/admin/cashDashboard'
         },
         {
           key: '3',
-          title: '年度销售额完成度',
-          route: '/admin/salesDashboard'
+          title: '月订单以及预算（待开发）',
+          route: '/admin/salesAndBudget'
         },
         {
           key: '4',
-          title: '资金',
-          route: '/admin/cashDashboard'
+          title: '年度销售额完成度（待开发）',
+          route: '/admin/salesDashboard'
         }
       ]
     }

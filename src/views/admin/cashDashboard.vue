@@ -26,12 +26,13 @@
           <div class="pieChart" id="myChart"></div>
         </van-tab>
         <van-tab name="details" title="明细" :style="{ height: this.cardHeight }">
-          <van-pull-refresh v-model="loading" @refresh="onRefresh" :style="{ height: this.scrollerHeight }">
+          <!-- <van-pull-refresh v-model="loading" @refresh="onRefresh" :style="{ height: this.scrollerHeight }"> -->
             <VuePerfectScrollbar class="scroll-area" :settings="settings" :style="{ height: this.scrollerHeight }">
               <van-cell v-for="item in cashList" :key="item" :title="item.bank" @click="cellClick(item)">
                 <template #label>
-                  <div>本月余额：{{ item.balanceOfMonth | NumToUnitNum }} {{ item.balanceOfMonth | GetUnit }}</div>
+                  <div>本日余额：{{ item.balanceOfMonth | NumToUnitNum }} {{ item.balanceOfMonth | GetUnit }}</div>
                   <div>受限金额：{{ item.limitedAmount | NumToUnitNum }} {{ item.limitedAmount | GetUnit }}</div>
+                  <div v-if="item.corpId === '1000'">宁波创源余额：{{ item.balanceOfMonth - item.limitedAmount | NumToUnitNum }} {{ item.balanceOfMonth - item.limitedAmount | GetUnit }}</div>
                   <div class="Progress mb-3">
                     <span v-for="i in item.currencyAccounts" :key="i.key" class="Progress-item" :style="{ backgroundColor: color[i.key], width: i.value + '%'}"></span>
                     <!-- <span itemprop="keywords" aria-label="JavaScript 71.9" style="background-color: #e34c26;width: 71.9%;" class="Progress-item"></span>
@@ -49,7 +50,7 @@
                 </template>
               </van-cell>
             </VuePerfectScrollbar>
-          </van-pull-refresh>
+          <!-- </van-pull-refresh> -->
         </van-tab>
       </van-tabs>
     </van-cell>

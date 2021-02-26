@@ -45,9 +45,13 @@
       </van-tabs>
     </van-cell>
     <van-cell class="card">
-      <div v-for="item in sumList" :key="item.key">
-        {{ item.key }} : {{ item.value | NumToUnitNum }} {{ item.value | GetUnit }}
-      </div>
+      <!-- <div v-for="item in sumList" :key="item.key">
+        <p>{{ item.key }} :</p><p>{{ item.value | NumToUnitNum }} {{ item.value | GetUnit }}</p>
+      </div> -->
+      <van-row v-for="item in sumList" :key="item.key" gutter="10">
+        <van-col class="right" span="6">{{ item.key }}</van-col>
+        <van-col span="18"> : {{ item.value | NumToUnitNum }} {{ item.value | GetUnit }}</van-col>
+      </van-row>
     </van-cell>
   </div>
 </template>
@@ -204,7 +208,19 @@ export default {
         },
         yAxis: { // 直角坐标系 grid 中的 y 轴
           type: 'value',
-          boundaryGap: [0, '100%']
+          boundaryGap: [0, '100%'],
+          axisLabel: {
+            formatter: function(value, index) {
+              if (!value) return '0.00元'
+              if (value > 100000000 || value < -100000000) {
+                return Number(value / 100000000).toFixed(0) + '亿元'
+              } else if (value > 10000 || value < -10000) {
+                return Number(value / 10000).toFixed(0) + '万元'
+              } else {
+                return Number(value).toFixed(0) + '元'
+              }
+            }
+          }
         },
         dataZoom: [
           { // dataZoom 组件 用于区域缩放，从而能自由关注细节的数据信息，或者概览数据整体，或者去除离群点的影响
@@ -288,7 +304,19 @@ export default {
         yAxis: { // 直角坐标系 grid 中的 y 轴
           type: 'value',
           boundaryGap: [0, '100%'],
-          nameRotate: 90
+          nameRotate: 90,
+          axisLabel: {
+            formatter: function(value, index) {
+              if (!value) return '0.00元'
+              if (value > 100000000 || value < -100000000) {
+                return Number(value / 100000000).toFixed(0) + '亿元'
+              } else if (value > 10000 || value < -10000) {
+                return Number(value / 10000).toFixed(0) + '万元'
+              } else {
+                return Number(value).toFixed(0) + '元'
+              }
+            }
+          }
         },
         dataZoom: [
           { // dataZoom 组件 用于区域缩放，从而能自由关注细节的数据信息，或者概览数据整体，或者去除离群点的影响
@@ -407,7 +435,19 @@ export default {
           data: this.typeData.date
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            formatter: function(value, index) {
+              if (!value) return '0.00元'
+              if (value > 100000000 || value < -100000000) {
+                return Number(value / 100000000).toFixed(0) + '亿元'
+              } else if (value > 10000 || value < -10000) {
+                return Number(value / 10000).toFixed(0) + '万元'
+              } else {
+                return Number(value).toFixed(0) + '元'
+              }
+            }
+          }
         },
         series: this.typeData.data
       }
@@ -445,7 +485,19 @@ export default {
           data: this.areaData.date
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            formatter: function(value, index) {
+              if (!value) return '0.00元'
+              if (value > 100000000 || value < -100000000) {
+                return Number(value / 100000000).toFixed(0) + '亿元'
+              } else if (value > 10000 || value < -10000) {
+                return Number(value / 10000).toFixed(0) + '万元'
+              } else {
+                return Number(value).toFixed(0) + '元'
+              }
+            }
+          }
         },
         series: this.areaData.data
       }
@@ -480,7 +532,19 @@ export default {
           data: this.customerData.date
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            formatter: function(value, index) {
+              if (!value) return '0.00元'
+              if (value > 100000000 || value < -100000000) {
+                return Number(value / 100000000).toFixed(0) + '亿元'
+              } else if (value > 10000 || value < -10000) {
+                return Number(value / 10000).toFixed(0) + '万元'
+              } else {
+                return Number(value).toFixed(0) + '元'
+              }
+            }
+          }
         },
         series: this.customerData.data
       }
@@ -712,6 +776,16 @@ export default {
       for (const key in sum) {
         this.sumList.push({ 'key': key, 'value': sum[key] })
       }
+    },
+    handleNumToUnitNum(value) {
+      if (!value) return '0.00元'
+      if (value > 100000000 || value < -100000000) {
+        return Number(value / 100000000).toFixed(2) + '亿元'
+      } else if (value > 10000 || value < -10000) {
+        return Number(value / 10000).toFixed(2) + '万元'
+      } else {
+        return Number(value).toFixed(2) + '元'
+      }
     }
   }
 }
@@ -763,6 +837,12 @@ export default {
     vertical-align: -0.15em;
     fill: currentColor;
     overflow: hidden;
+  }
+  .right {
+    text-align: right;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 }
 </style>
